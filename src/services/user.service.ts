@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma'
-import { CreateUserInput, UpdateUserInput } from '../schemas/user.schema'
+import { UpdateUserInput } from '../schemas/user.schema'
 
 export class UserService {
   async getAllUsers() {
@@ -16,11 +16,10 @@ export class UserService {
     return user
   }
 
-  async createUser(data: CreateUserInput) {
-    const user = await prisma.user.create({
-      data: {
-        name: data.name,
-        email: data.email,
+  async getUserByEmail(email: string) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email,
       },
     })
     return user

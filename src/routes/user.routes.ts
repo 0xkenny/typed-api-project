@@ -1,7 +1,6 @@
 import { FastifyInstance } from 'fastify'
 import { UserController } from '../controllers/user.controller'
 import {
-  createUserSchema,
   getUserByIdSchema,
   getUsersSchema,
   updateUserSchema,
@@ -14,23 +13,23 @@ export async function userRoutes(app: FastifyInstance) {
     schema: { tags: ['Users'], ...getUsersSchema },
     handler: userController.getAllUsers,
   })
-  app.get('/users/get/:id', {
+  app.get('/users/id/:id', {
     schema: { tags: ['Users'], ...getUserByIdSchema },
     handler: userController.getUserById,
   })
 
-  app.post('/users', {
-    schema: { tags: ['Users'], ...createUserSchema },
-    handler: userController.createUser,
+  app.get('/users/email/:email', {
+    schema: { tags: ['Users'], ...getUserByIdSchema },
+    handler: userController.getUserByEmail,
   })
 
-  app.put('/users/update/:id', {
+  app.put('/users/:id', {
     schema: { tags: ['Users'], ...updateUserSchema },
     handler: userController.updateUser,
   })
 
   app.delete(
-    '/users/delete/:id',
+    '/users/:id',
     {
       schema: {
         tags: ['Users'],

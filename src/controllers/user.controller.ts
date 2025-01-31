@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from 'fastify'
 import { UserService } from '../services/user.service'
-import { CreateUserInput, UpdateUserInput } from '../schemas/user.schema'
+import { UpdateUserInput } from '../schemas/user.schema'
 
 export class UserController {
   private userService: UserService
@@ -33,13 +33,16 @@ export class UserController {
     }
   }
 
-  createUser = async (
-    request: FastifyRequest<{ Body: CreateUserInput }>,
+  getUserByEmail = async (
+    request: FastifyRequest<{ Params: { email: string } }>,
     reply: FastifyReply
   ) => {
     try {
-      const user = await this.userService.createUser(request.body)
-      return reply.status(201).send(user)
+      const user = await this.userService.getUserByEmail(request.params.email)
+      if (!user) {
+        return reply.status(404).send({ error: 'User not found' })
+      }
+      return reply.send(user)
     } catch (error) {
       return reply.status(500).send({ error: 'Internal Server Error' })
     }
@@ -59,8 +62,6 @@ export class UserController {
       return reply.status(500).send({ error: 'Internal Server Error' })
     }
   }
-
-  // Add other controller methods (deleteUser)
 
   deleteUser = async (
     request: FastifyRequest<{ Params: { id: string } }>,
