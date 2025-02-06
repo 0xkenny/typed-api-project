@@ -40,11 +40,22 @@ export class AuthController {
       })
       return reply.status(201).send(result)
     } catch (error) {
-      console.log(error)
       if (error === 'User already exists') {
         return reply.status(400).send({ error: 'User already exists' })
       }
       return reply.status(500).send({ error: 'Internal Server Error' })
+    }
+  }
+
+  logout = async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const result = await this.authService.logout()
+      if (result.clearCookie) {
+        reply.clearCookie('access_token', { path: '/' })
+      }
+      return reply.send(result)
+    } catch (error) {
+      return reply.status(400).send({ error: error })
     }
   }
 }

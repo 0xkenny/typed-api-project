@@ -60,4 +60,12 @@ export class AuthService {
 
     return { accessToken: token }
   }
+
+  async logout() {
+    //Idk if this is a good way to do
+    return {
+      clearCookie: true,
+      message: 'Logged out!',
+    }
+  }
 }

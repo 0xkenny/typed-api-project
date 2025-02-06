@@ -25,5 +25,14 @@ export const loginUserSchema = {
   },
 }
 
+export const logoutUserSchema = {
+  response: {
+    201: z.object({
+      clearCookie: z.boolean(),
+      message: z.string(),
+    }),
+  },
+}
+
 export type CreateUserInput = z.infer<typeof createUserSchema.body>
 export type LoginUserInput = z.infer<typeof loginUserSchema.body>

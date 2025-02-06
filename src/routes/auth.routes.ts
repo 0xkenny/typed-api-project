@@ -1,6 +1,10 @@
 import { FastifyInstance } from 'fastify'
 import { AuthController } from '../controllers/auth.controller'
-import { createUserSchema, loginUserSchema } from '../schemas/auth.schema'
+import {
+  createUserSchema,
+  loginUserSchema,
+  logoutUserSchema,
+} from '../schemas/auth.schema'
 import { AuthService } from '../services/auth.service'
 
 export async function authRoutes(app: FastifyInstance) {
@@ -21,5 +25,13 @@ export async function authRoutes(app: FastifyInstance) {
       ...createUserSchema,
     },
     handler: authController.register,
+  })
+
+  app.post('/logout', {
+    schema: {
+      tags: ['Auth'],
+      ...logoutUserSchema,
+    },
+    handler: authController.logout,
   })
 }
