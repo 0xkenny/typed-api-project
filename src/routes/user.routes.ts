@@ -10,11 +10,18 @@ export async function userRoutes(app: FastifyInstance) {
   const userController = new UserController()
 
   app.get('/users', {
-    schema: { tags: ['Users'], ...getUsersSchema },
+    preHandler: [app.authenticate],
+    schema: {
+      tags: ['Users'],
+      ...getUsersSchema,
+    },
     handler: userController.getAllUsers,
   })
   app.get('/users/id/:id', {
-    schema: { tags: ['Users'], ...getUserByIdSchema },
+    schema: {
+      tags: ['Users'],
+      ...getUserByIdSchema,
+    },
     handler: userController.getUserById,
   })
 

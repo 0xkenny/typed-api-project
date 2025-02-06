@@ -1,15 +1,16 @@
 import { fastifyCors } from '@fastify/cors'
 import { fastifySwaggerUi } from '@fastify/swagger-ui'
 import { fastifySwagger } from '@fastify/swagger'
-import fastify from 'fastify'
+import fastify, { FastifyReply, FastifyRequest } from 'fastify'
 import {
   jsonSchemaTransform,
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod'
 import { userRoutes } from './routes/user.routes'
-import jwt from '@fastify/jwt'
+import fjwt, { FastifyJWT } from '@fastify/jwt'
 import { authRoutes } from './routes/auth.routes'
+import fCookie from '@fastify/cookie'
 
 const app = fastify({
   logger: true,
@@ -32,6 +33,7 @@ app.register(fastifySwagger, {
       { name: 'Auth', description: 'Auth related endpoints' },
     ],
   },
+
   transform: jsonSchemaTransform,
 })
 
@@ -42,9 +44,32 @@ app.register(fastifySwaggerUi, {
 app.register(userRoutes, { prefix: 'api' })
 app.register(authRoutes, { prefix: 'auth' })
 
-app.register(jwt, {
+app.register(fjwt, {
   secret: `${process.env.JWT_SECRET}`,
 })
+
+app.addHook('preHandler', (req, res, next) => {
+  req.jwt = app.jwt
+  return next()
+})
+
+app.register(fCookie, {
+  secret: `${process.env.JWT_SECRET}`,
+  hook: 'preHandler',
+})
+
+app.decorate(
+  'authenticate',
+  async (req: FastifyRequest, reply: FastifyReply) => {
+    const token = req.cookies.access_token
+
+    if (!token) {
+      return reply.status(401).send({ message: 'Authentication required' })
+    }
+    const decoded = req.jwt.verify<FastifyJWT['user']>(token)
+    req.user = decoded
+  }
+)
 
 app.listen({ port: 3000 }, (err, address) => {
   if (err) {

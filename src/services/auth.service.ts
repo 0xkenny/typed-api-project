@@ -29,15 +29,7 @@ export class AuthService {
       role: user.role,
     })
 
-    return {
-      token,
-      user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-    }
+    return { accessToken: token }
   }
 
   async register(data: CreateUserInput) {
@@ -66,6 +58,6 @@ export class AuthService {
       role: user.role,
     })
 
-    return { token, user }
+    return { accessToken: token }
   }
 }

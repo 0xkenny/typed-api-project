@@ -1,4 +1,3 @@
-import { Role } from '@prisma/client'
 import { z } from 'zod'
 
 export const createUserSchema = {
@@ -9,13 +8,7 @@ export const createUserSchema = {
   }),
   response: {
     201: z.object({
-      token: z.string(),
-      user: z.object({
-        id: z.string(),
-        name: z.string().nullable(),
-        email: z.string(),
-        role: z.nativeEnum(Role).default(Role.USER),
-      }),
+      accessToken: z.string(),
     }),
   },
 }
@@ -27,13 +20,7 @@ export const loginUserSchema = {
   }),
   response: {
     201: z.object({
-      token: z.string(),
-      user: z.object({
-        id: z.string(),
-        name: z.string().nullable(),
-        email: z.string(),
-        role: z.nativeEnum(Role).default(Role.USER),
-      }),
+      accessToken: z.string(),
     }),
   },
 }

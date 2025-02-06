@@ -11,6 +11,11 @@ export class AuthController {
   ) => {
     try {
       const result = await this.authService.login(request.body)
+      reply.setCookie('access_token', result.accessToken, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+      })
       return reply.send(result)
     } catch (error) {
       if (error === 'Invalid credentials') {
@@ -28,6 +33,11 @@ export class AuthController {
   ) => {
     try {
       const result = await this.authService.register(request.body)
+      reply.setCookie('access_token', result.accessToken, {
+        path: '/',
+        httpOnly: true,
+        secure: true,
+      })
       return reply.status(201).send(result)
     } catch (error) {
       console.log(error)
